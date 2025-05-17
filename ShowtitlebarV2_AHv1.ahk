@@ -1,106 +1,106 @@
-#SingleInstance force  ; Ç¿ÖÆµ¥ÊµÀıÔËĞĞ
-#Persistent            ; ±£³Ö½Å±¾³ÖĞøÔËĞĞ
-Menu, Tray, Tip, ShowtitlebarV2  ; ÉèÖÃÍĞÅÌÍ¼±êµÄĞü¸¡ÌáÊ¾ÎÄ±¾
+#SingleInstance force  ; å¼ºåˆ¶å•å®ä¾‹è¿è¡Œ
+#Persistent            ; ä¿æŒè„šæœ¬æŒç»­è¿è¡Œ
+Menu, Tray, Tip, ShowtitlebarV2  ; è®¾ç½®æ‰˜ç›˜å›¾æ ‡çš„æ‚¬æµ®æç¤ºæ–‡æœ¬
 
-; ====================== È«¾Ö±äÁ¿ÉùÃ÷ ======================
-global IsScriptEnabled := true       ; ½Å±¾×Ü¿ª¹Ø×´Ì¬
-global IsDragModeActive := false     ; ÍÏ¶¯Ä£Ê½¼¤»î±êÖ¾
-global IsDragging := false           ; ÕıÔÚÍÏ¶¯´°¿Ú±êÖ¾
-global TargetWinID := 0              ; µ±Ç°Ä¿±ê´°¿ÚID
-global DragStartX, DragStartY        ; ÍÏ¶¯ÆğÊ¼×ø±ê£¨Êó±ê£©
-global DragWinX, DragWinY            ; ÍÏ¶¯ÆğÊ¼×ø±ê£¨´°¿Ú£©
-global g_hOverlayGui := 0            ; Í¸Ã÷¸²¸Ç²ã´°¿Ú¾ä±ú
+; ====================== å…¨å±€å˜é‡å£°æ˜ ======================
+global IsScriptEnabled := true       ; è„šæœ¬æ€»å¼€å…³çŠ¶æ€
+global IsDragModeActive := false     ; æ‹–åŠ¨æ¨¡å¼æ¿€æ´»æ ‡å¿—
+global IsDragging := false           ; æ­£åœ¨æ‹–åŠ¨çª—å£æ ‡å¿—
+global TargetWinID := 0              ; å½“å‰ç›®æ ‡çª—å£ID
+global DragStartX, DragStartY        ; æ‹–åŠ¨èµ·å§‹åæ ‡ï¼ˆé¼ æ ‡ï¼‰
+global DragWinX, DragWinY            ; æ‹–åŠ¨èµ·å§‹åæ ‡ï¼ˆçª—å£ï¼‰
+global g_hOverlayGui := 0            ; é€æ˜è¦†ç›–å±‚çª—å£å¥æŸ„
 global FirstTime := true
 
-; ====================== ÍĞÅÌ²Ëµ¥ÉèÖÃ ======================
-Menu, Tray, NoStandard  ; Çå³ıÄ¬ÈÏ²Ëµ¥Ïî
+; ====================== æ‰˜ç›˜èœå•è®¾ç½® ======================
+Menu, Tray, NoStandard  ; æ¸…é™¤é»˜è®¤èœå•é¡¹
 
-; Ìí¼Ó×Ô¶¨Òå²Ëµ¥Ïî
-Menu, Tray, Add, ÆôÓÃ½Å±¾, ToggleScript
-Menu, Tray, Check, ÆôÓÃ½Å±¾  ; ³õÊ¼×´Ì¬ÉèÎªÑ¡ÖĞ(´ò¹³)
-Menu, Tray, Add  ; Ìí¼Ó·Ö¸ôÏß
-Menu, Tray, Add, ¹ØÓÚ, ShowAbout
-Menu, Tray, Add, ÍË³ö, ExitScript
-Menu, Tray, Default, ÆôÓÃ½Å±¾  ; ÉèÖÃÄ¬ÈÏÑ¡Ïî£¨Ë«»÷ÍĞÅÌÍ¼±ê´¥·¢£©
+; æ·»åŠ è‡ªå®šä¹‰èœå•é¡¹
+Menu, Tray, Add, å¯ç”¨è„šæœ¬, ToggleScript
+Menu, Tray, Check, å¯ç”¨è„šæœ¬  ; åˆå§‹çŠ¶æ€è®¾ä¸ºé€‰ä¸­(æ‰“é’©)
+Menu, Tray, Add  ; æ·»åŠ åˆ†éš”çº¿
+Menu, Tray, Add, å…³äº, ShowAbout
+Menu, Tray, Add, é€€å‡º, ExitScript
+Menu, Tray, Default, å¯ç”¨è„šæœ¬  ; è®¾ç½®é»˜è®¤é€‰é¡¹ï¼ˆåŒå‡»æ‰˜ç›˜å›¾æ ‡è§¦å‘ï¼‰
 
-; ====================== ´°¿Ú·ç¸ñµ÷Õû¿ì½İ¼ü ======================
-!^f::  ; Alt+Ctrl+F - ÆôÓÃ´°¿Úµ÷Õû£¨Ìí¼Ó±êÌâÀ¸ºÍ±ß¿ò£©
-    if (!IsScriptEnabled || IsDragModeActive)  ; ¼ì²é½Å±¾×´Ì¬
+; ====================== çª—å£é£æ ¼è°ƒæ•´å¿«æ·é”® ======================
+!^f::  ; Alt+Ctrl+F - å¯ç”¨çª—å£è°ƒæ•´ï¼ˆæ·»åŠ æ ‡é¢˜æ å’Œè¾¹æ¡†ï¼‰
+    if (!IsScriptEnabled || IsDragModeActive)  ; æ£€æŸ¥è„šæœ¬çŠ¶æ€
         return
     
-    WinGet, activeWin, ID, A  ; »ñÈ¡»î¶¯´°¿ÚID
+    WinGet, activeWin, ID, A  ; è·å–æ´»åŠ¨çª—å£ID
     
-    ; Ìí¼Ó´°¿ÚÑùÊ½±êÖ¾
-    WinSet, Style, +0xC00000, ahk_id %activeWin%  ; Ìí¼ÓWS_CAPTION£¨±êÌâÀ¸£©
-    WinSet, Style, +0x40000, ahk_id %activeWin%   ; Ìí¼ÓWS_SIZEBOX£¨¿Éµ÷Õû´óĞ¡±ß¿ò£©
-    WinSet, Style, +0x20000, ahk_id %activeWin%   ; Ìí¼ÓWS_MINIMIZEBOX£¨×îĞ¡»¯°´Å¥£©
-    WinSet, Style, +0x10000, ahk_id %activeWin%   ; Ìí¼ÓWS_MAXIMIZEBOX£¨×î´ó»¯°´Å¥£©
+    ; æ·»åŠ çª—å£æ ·å¼æ ‡å¿—
+    WinSet, Style, +0xC00000, ahk_id %activeWin%  ; æ·»åŠ WS_CAPTIONï¼ˆæ ‡é¢˜æ ï¼‰
+    WinSet, Style, +0x40000, ahk_id %activeWin%   ; æ·»åŠ WS_SIZEBOXï¼ˆå¯è°ƒæ•´å¤§å°è¾¹æ¡†ï¼‰
+    WinSet, Style, +0x20000, ahk_id %activeWin%   ; æ·»åŠ WS_MINIMIZEBOXï¼ˆæœ€å°åŒ–æŒ‰é’®ï¼‰
+    WinSet, Style, +0x10000, ahk_id %activeWin%   ; æ·»åŠ WS_MAXIMIZEBOXï¼ˆæœ€å¤§åŒ–æŒ‰é’®ï¼‰
     
-    ForceShowBorder("enable", activeWin)  ; Ç¿ÖÆË¢ĞÂ±ß¿òÏÔÊ¾
+    ForceShowBorder("enable", activeWin)  ; å¼ºåˆ¶åˆ·æ–°è¾¹æ¡†æ˜¾ç¤º
 return
 
-!^h::  ; Alt+Ctrl+H - ½ûÓÃ´°¿Úµ÷Õû£¨ÒÆ³ı±êÌâÀ¸ºÍ±ß¿ò£©
-    if (!IsScriptEnabled || IsDragModeActive)  ; ¼ì²é½Å±¾×´Ì¬
+!^h::  ; Alt+Ctrl+H - ç¦ç”¨çª—å£è°ƒæ•´ï¼ˆç§»é™¤æ ‡é¢˜æ å’Œè¾¹æ¡†ï¼‰
+    if (!IsScriptEnabled || IsDragModeActive)  ; æ£€æŸ¥è„šæœ¬çŠ¶æ€
         return
     
-    WinGet, activeWin, ID, A  ; »ñÈ¡»î¶¯´°¿ÚID
+    WinGet, activeWin, ID, A  ; è·å–æ´»åŠ¨çª—å£ID
     
-    ; ÒÆ³ı´°¿ÚÑùÊ½±êÖ¾
-    WinSet, Style, -0xC00000, ahk_id %activeWin%  ; ÒÆ³ıWS_CAPTION
-    WinSet, Style, -0x40000, ahk_id %activeWin%   ; ÒÆ³ıWS_SIZEBOX
-    WinSet, Style, -0x20000, ahk_id %activeWin%   ; ÒÆ³ıWS_MINIMIZEBOX
-    WinSet, Style, -0x10000, ahk_id %activeWin%   ; ÒÆ³ıWS_MAXIMIZEBOX
+    ; ç§»é™¤çª—å£æ ·å¼æ ‡å¿—
+    WinSet, Style, -0xC00000, ahk_id %activeWin%  ; ç§»é™¤WS_CAPTION
+    WinSet, Style, -0x40000, ahk_id %activeWin%   ; ç§»é™¤WS_SIZEBOX
+    WinSet, Style, -0x20000, ahk_id %activeWin%   ; ç§»é™¤WS_MINIMIZEBOX
+    WinSet, Style, -0x10000, ahk_id %activeWin%   ; ç§»é™¤WS_MAXIMIZEBOX
     
-    ForceShowBorder("disable", activeWin)  ; Ç¿ÖÆË¢ĞÂ±ß¿òÏÔÊ¾
+    ForceShowBorder("disable", activeWin)  ; å¼ºåˆ¶åˆ·æ–°è¾¹æ¡†æ˜¾ç¤º
 return
 
-; ====================== ´°¿ÚÍÏ¶¯¹¦ÄÜ ======================
-!^g::  ; Alt+Ctrl+G - ÇĞ»»ÍÏ¶¯Ä£Ê½
-    if (!IsScriptEnabled)  ; ¼ì²é½Å±¾ÊÇ·ñÆôÓÃ
+; ====================== çª—å£æ‹–åŠ¨åŠŸèƒ½ ======================
+!^g::  ; Alt+Ctrl+G - åˆ‡æ¢æ‹–åŠ¨æ¨¡å¼
+    if (!IsScriptEnabled)  ; æ£€æŸ¥è„šæœ¬æ˜¯å¦å¯ç”¨
         return
     
-    IsDragModeActive := !IsDragModeActive  ; ÇĞ»»ÍÏ¶¯Ä£Ê½×´Ì¬
+    IsDragModeActive := !IsDragModeActive  ; åˆ‡æ¢æ‹–åŠ¨æ¨¡å¼çŠ¶æ€
     
     if (IsDragModeActive) {
-        ; ½øÈëÍÏ¶¯Ä£Ê½Á÷³Ì ------
-        ; µÚÒ»´Î½øÈëÊ±ÏÔÊ¾ÌáÊ¾
+        ; è¿›å…¥æ‹–åŠ¨æ¨¡å¼æµç¨‹ ------
+        ; ç¬¬ä¸€æ¬¡è¿›å…¥æ—¶æ˜¾ç¤ºæç¤º
         if (FirstTime = true) {
-            MsgBox, 64, ÍÏ¶¯Ä£Ê½, ÍÏ¶¯Ä£Ê½¼¤»î (×ó¼ü°´×¡ÍÏ¶¯£¬Alt+Ctrl+G ÍË³ö)
-            FirstTime := false  ; ÏÂ´Î²»»áÔÙÌáÊ¾
+            MsgBox, 64, æ‹–åŠ¨æ¨¡å¼, æ‹–åŠ¨æ¨¡å¼æ¿€æ´» (å·¦é”®æŒ‰ä½æ‹–åŠ¨ï¼ŒAlt+Ctrl+G é€€å‡º)
+            FirstTime := false  ; ä¸‹æ¬¡ä¸ä¼šå†æç¤º
         }
-        WinGet, TargetWinID, ID, A  ; »ñÈ¡µ±Ç°»î¶¯´°¿ÚID
-        if !TargetWinID {  ; Èç¹ûÃ»ÓĞ»î¶¯´°¿ÚÔòÍË³ö
+        WinGet, TargetWinID, ID, A  ; è·å–å½“å‰æ´»åŠ¨çª—å£ID
+        if !TargetWinID {  ; å¦‚æœæ²¡æœ‰æ´»åŠ¨çª—å£åˆ™é€€å‡º
             IsDragModeActive := false
             return
         }
-        CreateOverlay()  ; ´´½¨Í¸Ã÷¸²¸Ç²ãÀ¹½ØÊó±ê
+        CreateOverlay()  ; åˆ›å»ºé€æ˜è¦†ç›–å±‚æ‹¦æˆªé¼ æ ‡
         
-        ; ÉèÖÃÒÆ¶¯¹â±êÑùÊ½
-        DllCall("SetCursor", "ptr", DllCall("LoadCursor", "ptr", 0, "ptr", 32646, "ptr"))  ; IDC_SIZEALL (ËÄÏò¼ıÍ·)
+        ; è®¾ç½®ç§»åŠ¨å…‰æ ‡æ ·å¼
+        DllCall("SetCursor", "ptr", DllCall("LoadCursor", "ptr", 0, "ptr", 32646, "ptr"))  ; IDC_SIZEALL (å››å‘ç®­å¤´)
         
-        ; ×¢²áÊó±êÈÈ¼ü
-        Hotkey, ~LButton, DragStartHandler, On     ; ×ó¼ü°´ÏÂ´¦Àí
-        Hotkey, ~LButton Up, DragEndHandler, On    ; ×ó¼üÊÍ·Å´¦Àí
+        ; æ³¨å†Œé¼ æ ‡çƒ­é”®
+        Hotkey, ~LButton, DragStartHandler, On     ; å·¦é”®æŒ‰ä¸‹å¤„ç†
+        Hotkey, ~LButton Up, DragEndHandler, On    ; å·¦é”®é‡Šæ”¾å¤„ç†
         
     } else {
-        ; ÍË³öÍÏ¶¯Ä£Ê½Á÷³Ì ------
-        DestroyOverlay()  ; Ïú»ÙÍ¸Ã÷¸²¸Ç²ã
+        ; é€€å‡ºæ‹–åŠ¨æ¨¡å¼æµç¨‹ ------
+        DestroyOverlay()  ; é”€æ¯é€æ˜è¦†ç›–å±‚
         
-        ; ×¢ÏúÊó±êÈÈ¼ü
+        ; æ³¨é”€é¼ æ ‡çƒ­é”®
         Hotkey, ~LButton, Off
         Hotkey, ~LButton Up, Off
         
-        ; ÖØÖÃ×´Ì¬
+        ; é‡ç½®çŠ¶æ€
         IsDragging := false
         TargetWinID := 0
-        ToolTip,,,, 1  ; ¹Ø±ÕÌáÊ¾
+        ToolTip,,,, 1  ; å…³é—­æç¤º
         
-        ; »Ö¸´Ä¬ÈÏ¹â±ê
-        DllCall("SetCursor", "ptr", DllCall("LoadCursor", "ptr", 0, "ptr", 32512, "ptr"))  ; IDC_ARROW (±ê×¼¼ıÍ·)
+        ; æ¢å¤é»˜è®¤å…‰æ ‡
+        DllCall("SetCursor", "ptr", DllCall("LoadCursor", "ptr", 0, "ptr", 32512, "ptr"))  ; IDC_ARROW (æ ‡å‡†ç®­å¤´)
     }
 return
 
-; ====================== Í¸Ã÷¸²¸Ç²ãÏà¹Øº¯Êı ======================
+; ====================== é€æ˜è¦†ç›–å±‚ç›¸å…³å‡½æ•° ======================
 CreateOverlay() {
     global g_hOverlayGui
     
@@ -109,10 +109,10 @@ CreateOverlay() {
     Gui, Overlay:Font, s1
     Gui, Overlay:+LastFound
     WinSet, Transparent, 1
-    WinSet, ExStyle, +0x20  ; Ìí¼ÓWS_EX_TRANSPARENT
-    WinSet, ExStyle, -0x20  ; ÒÆ³ıWS_EX_TRANSPARENT
+    WinSet, ExStyle, +0x20  ; æ·»åŠ WS_EX_TRANSPARENT
+    WinSet, ExStyle, -0x20  ; ç§»é™¤WS_EX_TRANSPARENT
     
-    ; ÏÔÊ¾È«ÆÁ´°¿Ú
+    ; æ˜¾ç¤ºå…¨å±çª—å£
     Gui, Overlay:Show, x0 y0 w%A_ScreenWidth% h%A_ScreenHeight% NoActivate
     WinGet, g_hOverlayGui, ID, A
 }
@@ -126,110 +126,110 @@ DestroyOverlay() {
     }
 }
 
-; ====================== ÍÏ¶¯ÊÂ¼ş´¦Àíº¯Êı ======================
+; ====================== æ‹–åŠ¨äº‹ä»¶å¤„ç†å‡½æ•° ======================
 DragStartHandler:
-    if (!IsDragModeActive || !TargetWinID)  ; °²È«¼ì²é
+    if (!IsDragModeActive || !TargetWinID)  ; å®‰å…¨æ£€æŸ¥
         return
     
-    ; ¼ÇÂ¼³õÊ¼Î»ÖÃĞÅÏ¢
-    WinGetPos, winX, winY,,, ahk_id %TargetWinID%  ; »ñÈ¡´°¿Úµ±Ç°Î»ÖÃ
-    MouseGetPos, mouseX, mouseY           ; »ñÈ¡Êó±êµ±Ç°Î»ÖÃ
+    ; è®°å½•åˆå§‹ä½ç½®ä¿¡æ¯
+    WinGetPos, winX, winY,,, ahk_id %TargetWinID%  ; è·å–çª—å£å½“å‰ä½ç½®
+    MouseGetPos, mouseX, mouseY           ; è·å–é¼ æ ‡å½“å‰ä½ç½®
     
-    DragStartX := mouseX  ; Êó±êÆğÊ¼X
-    DragStartY := mouseY  ; Êó±êÆğÊ¼Y
-    DragWinX := winX      ; ´°¿ÚÆğÊ¼X
-    DragWinY := winY      ; ´°¿ÚÆğÊ¼Y
+    DragStartX := mouseX  ; é¼ æ ‡èµ·å§‹X
+    DragStartY := mouseY  ; é¼ æ ‡èµ·å§‹Y
+    DragWinX := winX      ; çª—å£èµ·å§‹X
+    DragWinY := winY      ; çª—å£èµ·å§‹Y
     
-    IsDragging := true  ; ±ê¼ÇÎªÕıÔÚÍÏ¶¯
+    IsDragging := true  ; æ ‡è®°ä¸ºæ­£åœ¨æ‹–åŠ¨
     
-    ; Æô¶¯¶¨Ê±Æ÷Á¢¼´¸üĞÂ´°¿ÚÎ»ÖÃ
+    ; å¯åŠ¨å®šæ—¶å™¨ç«‹å³æ›´æ–°çª—å£ä½ç½®
     SetTimer, UpdateWindowPosition, -1
 return
 
 DragEndHandler:
-    IsDragging := false          ; ±ê¼ÇÍÏ¶¯½áÊø
-    SetTimer, UpdateWindowPosition, Off  ; Í£Ö¹¶¨Ê±Æ÷
+    IsDragging := false          ; æ ‡è®°æ‹–åŠ¨ç»“æŸ
+    SetTimer, UpdateWindowPosition, Off  ; åœæ­¢å®šæ—¶å™¨
 return
 
 UpdateWindowPosition:
-    if (!IsDragging || !TargetWinID)  ; °²È«¼ì²é
+    if (!IsDragging || !TargetWinID)  ; å®‰å…¨æ£€æŸ¥
         return
     
-    MouseGetPos, mouseX, mouseY  ; »ñÈ¡µ±Ç°Êó±êÎ»ÖÃ
+    MouseGetPos, mouseX, mouseY  ; è·å–å½“å‰é¼ æ ‡ä½ç½®
     
-    ; ¼ÆËãĞÂÎ»ÖÃ
+    ; è®¡ç®—æ–°ä½ç½®
     newX := mouseX - (DragStartX - DragWinX)
     newY := mouseY - (DragStartY - DragWinY)
     
-    WinMove, ahk_id %TargetWinID%,, newX, newY  ; ÒÆ¶¯Ä¿±ê´°¿Ú
+    WinMove, ahk_id %TargetWinID%,, newX, newY  ; ç§»åŠ¨ç›®æ ‡çª—å£
     
-    ; Èç¹ûÈÔÔÚÍÏ¶¯×´Ì¬£¬10msºó¼ÌĞø¸üĞÂ
+    ; å¦‚æœä»åœ¨æ‹–åŠ¨çŠ¶æ€ï¼Œ10msåç»§ç»­æ›´æ–°
     if (IsDragging)
         SetTimer, UpdateWindowPosition, -10
 return
 
-; ====================== ¸¨Öú¹¤¾ßº¯Êı ======================
+; ====================== è¾…åŠ©å·¥å…·å‡½æ•° ======================
 ForceShowBorder(action, WinID) {
-    WinGetPos, X, Y, W, H, ahk_id %WinID%  ; »ñÈ¡µ±Ç°³ß´ç
+    WinGetPos, X, Y, W, H, ahk_id %WinID%  ; è·å–å½“å‰å°ºå¯¸
     
     if (action = "enable") {
-        WinSet, Style, +0x40000, ahk_id %WinID%  ; Ìí¼ÓWS_SIZEBOX
-        WinGet, winStyle, Style, ahk_id %WinID%  ; »ñÈ¡´°¿ÚÑùÊ½
-        if !(winStyle & 0xC00000)  ; Èç¹ûÎŞ±êÌâÀ¸
-            WinSet, Style, +0x00800000, ahk_id %WinID%  ; Ìí¼ÓWS_BORDER
+        WinSet, Style, +0x40000, ahk_id %WinID%  ; æ·»åŠ WS_SIZEBOX
+        WinGet, winStyle, Style, ahk_id %WinID%  ; è·å–çª—å£æ ·å¼
+        if !(winStyle & 0xC00000)  ; å¦‚æœæ— æ ‡é¢˜æ 
+            WinSet, Style, +0x00800000, ahk_id %WinID%  ; æ·»åŠ WS_BORDER
     } else {
-        WinSet, Style, -0x00800000, ahk_id %WinID%  ; ÒÆ³ıWS_BORDER
+        WinSet, Style, -0x00800000, ahk_id %WinID%  ; ç§»é™¤WS_BORDER
     }
     
-    ; Í¨¹ıÁÙÊ±µ÷Õû´°¿Ú´óĞ¡Ç¿ÖÆÖØ»æ
-    WinMove, ahk_id %WinID%,, X, Y, W+1, H+1  ; ÏÈÉÔÎ¢Ôö´ó
-    WinMove, ahk_id %WinID%,, X, Y, W, H      ; ÔÙ»Ö¸´Ô­³ß´ç
+    ; é€šè¿‡ä¸´æ—¶è°ƒæ•´çª—å£å¤§å°å¼ºåˆ¶é‡ç»˜
+    WinMove, ahk_id %WinID%,, X, Y, W+1, H+1  ; å…ˆç¨å¾®å¢å¤§
+    WinMove, ahk_id %WinID%,, X, Y, W, H      ; å†æ¢å¤åŸå°ºå¯¸
 }
-; ====================== ²Ëµ¥Ïî¹¦ÄÜº¯Êı ======================
+; ====================== èœå•é¡¹åŠŸèƒ½å‡½æ•° ======================
 ToggleScript:
-    IsScriptEnabled := !IsScriptEnabled  ; ÇĞ»»×´Ì¬
+    IsScriptEnabled := !IsScriptEnabled  ; åˆ‡æ¢çŠ¶æ€
     
-    ; ¸üĞÂ²Ëµ¥Ïî×´Ì¬ºÍÍ¼±ê
+    ; æ›´æ–°èœå•é¡¹çŠ¶æ€å’Œå›¾æ ‡
     if (IsScriptEnabled) {
-        Menu, Tray, Check, ÆôÓÃ½Å±¾  ; Ìí¼Ó¶Ô¹´
+        Menu, Tray, Check, å¯ç”¨è„šæœ¬  ; æ·»åŠ å¯¹å‹¾
     } else {
-        Menu, Tray, Uncheck, ÆôÓÃ½Å±¾  ; ÒÆ³ı¶Ô¹´
+        Menu, Tray, Uncheck, å¯ç”¨è„šæœ¬  ; ç§»é™¤å¯¹å‹¾
         
-        ; ½ûÓÃÊ±ÇåÀíÍÏ¶¯Ä£Ê½
+        ; ç¦ç”¨æ—¶æ¸…ç†æ‹–åŠ¨æ¨¡å¼
         if (IsDragModeActive) {
-            DestroyOverlay()  ; ÒÆ³ıÍ¸Ã÷²ã
+            DestroyOverlay()  ; ç§»é™¤é€æ˜å±‚
             
-            ; ×¢ÏúÈÈ¼ü
+            ; æ³¨é”€çƒ­é”®
             Hotkey, ~LButton, Off
             Hotkey, ~LButton Up, Off
             
-            ; ÖØÖÃ×´Ì¬
+            ; é‡ç½®çŠ¶æ€
             IsDragModeActive := false
             IsDragging := false
-            SetTimer, UpdateWindowPosition, Off  ; Í£Ö¹¶¨Ê±Æ÷
+            SetTimer, UpdateWindowPosition, Off  ; åœæ­¢å®šæ—¶å™¨
         }
     }
 return
 
 ShowAbout:
-    MsgBox, 64, ¹ØÓÚ ÎŞ±ß¿ò´°¿Ú¿ØÖÆ,
+    MsgBox, 64, å…³äº æ— è¾¹æ¡†çª—å£æ§åˆ¶,
     (
-ÎŞ±ß¿ò´°¿Ú¿ØÖÆ
+æ— è¾¹æ¡†çª—å£æ§åˆ¶
 ---------------------------------
-    ¹¦ÄÜËµÃ÷£º
-Alt+Ctrl+F = ÓĞ±ß¿ò+µ÷Õû´°¿Ú
-Alt+Ctrl+H = ÎŞ±ß¿ò
-Alt+Ctrl+G = ´°¿ÚÍÏ¶¯Ä£Ê½
+    åŠŸèƒ½è¯´æ˜ï¼š
+Alt+Ctrl+F = æœ‰è¾¹æ¡†+è°ƒæ•´çª—å£
+Alt+Ctrl+H = æ— è¾¹æ¡†
+Alt+Ctrl+G = çª—å£æ‹–åŠ¨æ¨¡å¼
 ---------------------------------
-°æ±¾£ºAutoHotkey V1(V1.5)
-×÷Õß£ºLittle-data
-GitHub£ºhttps://github.com/Little-Data/showtitlebar-v2
-Ô­×÷Õß£ºWindowsTime
+ç‰ˆæœ¬ï¼šAutoHotkey V1(V1.5)
+ä½œè€…ï¼šLittle-data
+GitHubï¼šhttps://github.com/Little-Data/showtitlebar-v2
+åŸä½œè€…ï¼šWindowsTime
     )
 return
 
 ExitScript:
-    if (g_hOverlayGui)  ; ÇåÀíÍ¸Ã÷²ã
+    if (g_hOverlayGui)  ; æ¸…ç†é€æ˜å±‚
         DestroyOverlay()
-    ExitApp  ; ÍË³ö³ÌĞò
+    ExitApp  ; é€€å‡ºç¨‹åº
 return
